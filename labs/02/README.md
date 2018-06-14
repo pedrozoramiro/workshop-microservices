@@ -32,13 +32,13 @@
 ```
 - Execute a aplicação 
 - Abra a aplicação em um browser e verifique os seguintes endpoints
-  - http://localhost:8080/info
-  - http://localhost:8080/health
+  - http://localhost:8080/actuator/info
+  - http://localhost:8080/actuator/health
 - Tente acessar os seguintes demais endpoints
-  - http://localhost:8080/beans
-  - http://localhost:8080/configprops
-  - http://localhost:8080/autoconfig
-  - http://localhost:8080/mappings
+  - http://localhost:8080/actuator/beans
+  - http://localhost:8080/actuator/configprops
+  - http://localhost:8080/actuator/autoconfig
+  - http://localhost:8080/actuator/mappings
 - Foi possível acessa-los? Por padrão o Spring Boot não libera o acesso de alguns endpoints. É necessário habilitá-los via configurações especiais de segurança.
 - Para desabilitar essa proteção, adicione a seguinte propriedade no arquivo `application.properties`
   - `management.security.enabled = false`
