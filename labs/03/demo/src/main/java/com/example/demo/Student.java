@@ -2,8 +2,6 @@ package com.example.demo;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.springframework.hateoas.ResourceSupport;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @XmlRootElement
-public class Student extends ResourceSupport {
+public class Student {
 	private Long indentificator;
 	private String nome;
 	private Integer matricula;
