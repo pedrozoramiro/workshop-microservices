@@ -3,15 +3,14 @@ package com.example.demo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,54 +25,66 @@ import io.swagger.annotations.ApiOperation;
 @ExposesResourceFor(Student.class)
 @RequestMapping("/students")
 public class StudentController {
+	
+	@Autowired
+	private StudentsServices studentsServices;
 
-	private static List<Student> bdStudents = new ArrayList<>(
-			Arrays.asList(new Student(1L, "Ramiro", 1, "Ramiro.pedrozo@gmail.com"),
-					new Student(2L, "Romario", 2, "Romario.pedrozo@gmail.com"),
-					new Student(3L, "Roberto Carlos", 3, "Roberto.pedrozo@gmail.com"),
-					new Student(4L, "Rivalvdo", 3, "Rivalvdo.pedrozo@gmail.com")));
-
+	
 
 	@ApiOperation(value = "Recurso responsavél por prover todos os estudantes ", tags = "Estudantes")
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
+	@GetMapping
 	public Iterable<Resource<Student>> findAll() {
-		return bdStudents.stream().map(this::toResource).collect(Collectors.toList());
+		studentsServices.init();		
+		return studentsServices.findAll().stream().map(this::toResource).collect(Collectors.toList());
 	}
-
+	
+	@ApiOperation(value = "Recurso responsavél por prover todos os estudantes ", tags = "Estudantes")
+	@GetMapping("/name/{name}")
+	public Iterable<Resource<Student>> findAll(@PathVariable String name) {
+		studentsServices.init();		
+		return studentsServices.findAllByName(name).stream().map(this::toResource).collect(Collectors.toList());
+	}
+	
+	@ApiOperation(value = "Recurso responsavél por prover todos os estudantes ", tags = "Estudantes")
+	@GetMapping("/birthday/{month}")
+	public Iterable<Resource<Student>> findAllStudentsByMonthBirthday(@PathVariable Integer month) {
+		studentsServices.init();		
+		return studentsServices.findAllStudentsByMonthBirthday(month).stream().map(this::toResource).collect(Collectors.toList());
+	}
+	
+	
+	
 	@ApiOperation(value = "Recurso responsavél por prover 1 estudante baseado em seu ID", tags = "Estudantes")
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
+	@GetMapping("{id}")
 	public Resource<Student> findOne(@PathVariable Long id) {
-		return bdStudents.stream().filter(t -> t.getIndentificator() == id).map(this::toResource).findAny().get();
+		return toResource(studentsServices.findOne(id));
 	}
 
 
 	@ApiOperation(value = "Recurso responsavél criar 1 estudante ", tags = "Estudantes")
 	@PostMapping
 	public Resource<Student> create(@RequestBody Student student) {
-		bdStudents.add(student);
-		return toResource(student);
+		return toResource(studentsServices.create(student));
 	}
 
 
 	@ApiOperation(value = "Recurso responsavél atualizar 1 estudante ", tags = "Estudantes")
 	@PutMapping
 	public Resource<Student> update(@RequestBody Student student) {
-		bdStudents.removeIf(t -> t.getIndentificator().equals(student.getIndentificator()));
-		bdStudents.add(student);
-		return toResource(student);
+		return toResource(studentsServices.update(student));
 	}
 
 
 	@ApiOperation(value = "Recurso responsavél remover 1 estudante ", tags = "Estudantes")
 	@DeleteMapping("{id}")
 	public void delete(@PathVariable Long id) {
-		bdStudents.removeIf(t -> t.getIndentificator().equals(id));
+		studentsServices.delete(id);
 	}
 
 	
 	private Resource<Student> toResource(Student student) {
 		return new Resource<>(student,
-				linkTo(methodOn(StudentController.class).findOne(student.getIndentificator())).withSelfRel(),
+				linkTo(methodOn(StudentController.class).findOne(student.getId())).withSelfRel(),
 				linkTo(methodOn(StudentController.class).findAll()).withRel("students"));
 	}
 }
