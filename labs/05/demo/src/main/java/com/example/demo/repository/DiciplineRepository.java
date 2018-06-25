@@ -9,10 +9,10 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 import com.example.demo.model.Discipline;
 
-@RepositoryRestResource(path = "discipline",collectionResourceRel = "discipline") 
+@RepositoryRestResource() 
 public interface DiciplineRepository extends JpaRepository<Discipline, Long> {
 
-	@RestResource(path = "findByStartDateAfterCurrent")
+	@RestResource(path = "findbystartdate")
 	@Query("from Discipline dicipline where dicipline.startDate > CURRENT_DATE")
 	List<Discipline> findByStartDateAfterCurrent();
 }
