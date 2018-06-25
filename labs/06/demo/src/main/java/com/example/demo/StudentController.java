@@ -32,8 +32,8 @@ public class StudentController {
 	@Autowired
 	private StudentsServices studentsServices;
 	
-	//@PreAuthorize("@securityService.hasPermission('demands:delete')")
-	//@Secured("ROLE_USER")
+	
+	@Secured("ROLE_USER")
 	@ApiOperation(value = "Recurso responsavél por prover todos os estudantes ", tags = "Estudantes")
 	@GetMapping
 	public Iterable<Resource<Student>> findAll() {
@@ -57,6 +57,7 @@ public class StudentController {
 	
 	@ApiOperation(value = "Recurso responsavél por prover 1 estudante baseado em seu ID", tags = "Estudantes")
 	@GetMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public Resource<Student> findOne(@PathVariable Long id) {
 		return toResource(studentsServices.findOne(id));
 	}

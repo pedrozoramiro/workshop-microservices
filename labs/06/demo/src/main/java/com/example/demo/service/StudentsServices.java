@@ -60,5 +60,9 @@ public class StudentsServices {
 	public Collection<Student> findAllStudentsByMonthBirthday(Integer month) {
 		return studentsRepository.findAllStudentsByMonthBirthday(month);
 	}
+	
+	public Boolean hasPermission(String profile) {
+		return "XABLAU".equals(profile);
+	}
 
 }
